@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/style.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+</head>
+
+<body>
+    <main>
+        <!-- <div class="caixa">
+            <form name="login" action="/login_user" method="post">
+                <div class="mb-3 container ">
+                    <h3>Área de entrada</h3>
+                    <label for="nome" class="form-label">Digite seu nome: </label>
+                    <input type="text" name="nome" class="form-control" required>
+
+                    <label for="senha" class="form-label">Digite sua senha: </label>
+                    <input type="number" name="senha" class="form-control" required>
+
+                    <input type="submit" name="Enter" id="submit" class="">
+
+                </div>
+            </form>
+        </div> -->
+        <div class="d-flex justify-content-center align-items-center vh-100 bg-light">
+            <div class="card shadow-lg p-5" style="width: 600px; max-width: 90%;">
+                <h2 class="text-center mb-4 fs-2">Área de Entrada</h2>
+                <form name="login" action="/login_user" method="post">
+                    <div class="mb-4">
+                        <label for="nome" class="form-label lead">Seu nome:</label>
+                        <input type="text" class="form-control" id="nome" name="nome" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="senha" class="form-label lead">Senha:</label>
+                        <input type="password" class="form-control " id="senha" name="senha" required>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary btn-lg py-1 px-4">Entrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+
+
+
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
