@@ -1,0 +1,26 @@
+/* ========================================
+    PARTE DO LOGIN
+    tambem será usada em outras pages
+   ======================================== */
+
+body {
+    background-color: rgb(74, 121, 165) !important;
+}
+
+.bg-body {
+    background-color: rgba(0, 0, 0, 0.849) !important;
+}
+
+.cor-texto{
+    color: white !important;
+}
+
+.fundo-login {
+    background-color: rgb(163, 194, 219) !important;
+}
+
+.btn-hover:hover {
+    background-color: rgb(73, 0, 0) !important ;
+    color: rgb(255, 255, 255) !important;
+    transition: 0.2s ease-out;
+}
