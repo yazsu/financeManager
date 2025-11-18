@@ -2,7 +2,7 @@
 # GERENCIADOR DE FINAÇAS - Imports
 # ========================================
 
-from flask import Flask, jsonify, session, render_template, redirect, url_for, request
+from flask import Flask, jsonify, session, render_template, redirect, url_for, request, flash
 from datetime import datetime, timezone
 import os
 import secrets
@@ -18,8 +18,8 @@ app.config['SECRET_KEY'] = os.environ.get('FLASK_SECRET_KEY', secrets.token_hex(
 
 @app.route('/')
 def index():
-    """Página de entrada para o site"""
     return render_template('index.html')
+
 
 
 @app.get('/homepage')
@@ -44,9 +44,11 @@ def login():
                 """,(userInput, passwordInput) )
     
     user = cur.fetchone()
-    
+        
     if user is None:
-        return redirect(url_for('index', msg='Usuário não existe.'))    
+        flash('Usuário não existe.', 'danger')   # 'danger' = categoria (bootstrap)
+        return redirect(url_for('index'))
+        
     
     session['username'] = user['username']
     return redirect(url_for('homepage'))
