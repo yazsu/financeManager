@@ -44,15 +44,18 @@
                         <button type="submit" class="btn btn-light btn-lg btn-hover py-1 px-4">Entrar</button>
                     </div>
                 </form>
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                {% for category, msg in messages %}
-                <div class="alert alert-{{ category }}  mt-4">{{ msg }}</div>
-                {% endfor %}
-                {% endif %}
-                {% endwith %}
+                <a href="{{ url_for('criarConta') }}"
+                    class="d-flex justify-content-center align-items-center m-3">Criar conta</a>
 
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, msg in messages %}
+                         <div class="alert alert-{{ category }}">{{ msg }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
             </div>
+        </div>
     </main>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"

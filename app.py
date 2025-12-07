@@ -4,6 +4,8 @@
 
 from flask import Flask, jsonify, session, render_template, redirect, url_for, request, flash
 from datetime import datetime, timezone
+from werkzeug.security import generate_password_hash, check_password_hash
+from functools import wraps
 import os
 import secrets
 import sqlite3
@@ -30,6 +32,44 @@ def homepage():
     return render_template('homepage.html', salario = salario)
 
 # ========================================
+# GERENCIADOR DE FINANÇAS - Rota de registro
+# ========================================
+
+@app.route('/registro')
+def criarConta():
+    if request.method == 'POST':
+        username = request.form.get('nome', '').strip()
+        email = request.form.get('email', '').strip() or None
+        password = request.form.get('senha', '').strip() 
+    
+        if not username or password: 
+            flash('Preencha o usuário e senha.', 'danger')
+            return render_template('criarConta.html')
+        
+        conn = get_conn()
+        cur = conn.cursor()
+        cur.execute("""
+                    SELECT id FROM users WHERE username = ? OR (email IS NOT NULL AND email = ?)""",
+                    (username, email))
+        
+        if cur.fetchone():
+            flash('Usuário ou email já existem.', 'danger')
+            conn.close()
+            return render_template('criarConta.html')   
+        
+        pwd_hash = generate_password_hash(password)  # salta + hash (PBKDF2)
+            # insere usuário com salario inicial 0.0 por padrão
+        cur.execute("INSERT INTO users (username, email, password_hash, salario) VALUES (?, ?, ?, ?)",
+                        (username, email, pwd_hash, 0.0))
+        conn.commit()
+        conn.close()
+        
+        flash('Conta criada, faça login.', 'sucess')
+        return redirect(url_for('index'))
+        
+    return render_template('criarConta.html')
+
+# ========================================
 # GERENCIADOR DE FINANÇAS - Rota de login
 # ========================================
 
@@ -41,13 +81,11 @@ def login():
     
     conn = get_conn()
     cur = conn.cursor()
-    cur.execute("""
-                SELECT id, username FROM users WHERE username = ? AND password = ?
-                """,(userInput, passwordInput) )
-    
+    cur.execute("SELECT id, username, password_hash FROM users WHERE username = ?", (userInput,))
     user = cur.fetchone()
+    conn.close()
         
-    if user is None:
+    if user is None or not check_password_hash(user['password_hash'], passwordInput):
         flash('Usuário ou senha incorreta.', 'danger')   # 'danger' = categoria (bootstrap)
         return redirect(url_for('index'))
         
