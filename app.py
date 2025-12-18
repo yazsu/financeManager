@@ -41,32 +41,15 @@ def criarConta():
         username = request.form.get('nome', '').strip()
         email = request.form.get('email', '').strip() or None
         password = request.form.get('senha', '').strip() 
-    
-        if not username or password: 
-            flash('Preencha o usuário e senha.', 'danger')
-            return render_template('criarConta.html')
         
         conn = get_conn()
         cur = conn.cursor()
         cur.execute("""
-                    SELECT id FROM users WHERE username = ? OR (email IS NOT NULL AND email = ?)""",
-                    (username, email))
+                    INSERT INTO users (email, password_hash, created_at) VALUE (?, ?, ?)""",
+                    (username, password, email))
         
-        if cur.fetchone():
-            flash('Usuário ou email já existem.', 'danger')
-            conn.close()
-            return render_template('criarConta.html')   
-        
-        pwd_hash = generate_password_hash(password)  # salta + hash (PBKDF2)
-            # insere usuário com salario inicial 0.0 por padrão
-        cur.execute("INSERT INTO users (username, email, password_hash, salario) VALUES (?, ?, ?, ?)",
-                        (username, email, pwd_hash, 0.0))
         conn.commit()
         conn.close()
-        
-        flash('Conta criada, faça login.', 'sucess')
-        return redirect(url_for('index'))
-        
     return render_template('criarConta.html')
 
 # ========================================
