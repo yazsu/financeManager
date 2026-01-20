@@ -9,6 +9,7 @@ from functools import wraps
 import os
 import secrets
 import sqlite3
+import time 
 from queryExecutor import get_conn
 
 app = Flask(__name__)
@@ -31,26 +32,30 @@ def homepage():
     
     return render_template('homepage.html', salario = salario)
 
+@app.route('/registro')
+def registro():
+    return render_template('criarConta.html')
+
 # ========================================
 # GERENCIADOR DE FINANÇAS - Rota de registro
 # ========================================
 
-@app.route('/registro')
+@app.post('/registro')
 def criarConta():
-    if request.method == 'POST':
-        username = request.form.get('nome', '').strip()
-        email = request.form.get('email', '').strip() or None
-        password = request.form.get('senha', '').strip() 
+        username = request.form.get('username', '').strip()
+        email = request.form.get('email', '').strip()
+        password = request.form.get('password', '').strip() 
+        
+        agora = int(time.time())
         
         conn = get_conn()
         cur = conn.cursor()
-        cur.execute("""
-                    INSERT INTO users (email, password_hash, created_at) VALUE (?, ?, ?)""",
-                    (username, password, email))
+        cur.execute("INSERT INTO users (username, email, password_hash, created_at) VALUES (?, ?, ?, ?)",
+                    (username, email, password, agora))
         
         conn.commit()
         conn.close()
-    return render_template('criarConta.html')
+        return render_template('index.html')
 
 # ========================================
 # GERENCIADOR DE FINANÇAS - Rota de login
@@ -68,7 +73,7 @@ def login():
     user = cur.fetchone()
     conn.close()
         
-    if user is None or not check_password_hash(user['password_hash'], passwordInput):
+    if user is None:
         flash('Usuário ou senha incorreta.', 'danger')   # 'danger' = categoria (bootstrap)
         return redirect(url_for('index'))
         
@@ -117,15 +122,41 @@ def atualizarSalario():
 # GERENCIADOR DE FINANÇAS - Rota de demanda
 # ========================================
 
-@app.route('/demandas') #rota pra colocar as demandas financeiras na página 
+@app.route('/demandas/criar') #rota pra colocar as demandas financeiras na página 
 def criarDemanda():
     conn = get_conn()
     cur = conn.cursor()
     
+    tipo = request.form.get('tipo', '').strip
+    desc = request.form.get('desc', '').strip
+    valor = request.form.get('valor', '').strip 
+    
+    agora = int(time.time)
+    
     cur.execute("""
-                SELECT id, tipoDemanda, valopr FROM demandas ORDER BY ID """) 
-    dados = cur.fetchall() #retorna as tuplas 
+                INSERT INTO demandas (tipoDemanda, descricao, valor, data)
+                VALUES (?, ?, ?, ?)""",
+                (tipo, desc, valor, agora ))
+     
+    conn.commit
     conn.close()
+    
+    return redirect(url_for('homepage'))
+    
+@app.get('/demandas')
+def mostrarDemanda():
+    conn = get_conn()
+    cur = conn.cursor()
+    
+    cur.execute ("""
+                 SELECT id, tipoDemanda, descricao, valor, data
+                 FROM demandas 
+                 ORDER BY id
+                 """)
+    demandas = cur.fetchall()
+    conn.close()
+    
+    return render_template('demandas.html', demandas=demandas)
     
 # ========================================
 # INICIALIZAÇÃO

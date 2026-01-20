@@ -10,7 +10,33 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 </head>
+
 <body>
-    
+    <main>
+        <div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+            <div class="card shadow-lg p-5 cor-texto fundo-login" style="width: 600px; max-width: 90%;">
+                <h2 class="text-center mb-4 fs-2">Criar conta</h2>
+                <form name="login" action="{{ url_for('criarConta')}}" method="post">
+                    <div class="mb-4">
+                        <label for="username" class="form-label lead">Nome de usuario: </label>
+                        <input type="text" class="form-control" id="username" name="username" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="email" class="form-label lead">Email: </label>
+                        <input type="text" class="form-control" id="email" name="email" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="password" class="form-label lead">Senha:</label>
+                        <input type="password" class="form-control " id="password" name="password" required>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-light btn-lg btn-hover py-1 px-4">Criar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </main>
 </body>
+
 </html>
